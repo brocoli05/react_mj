@@ -1,0 +1,6 @@
+/* Use Flexbox to manage the horizontal spacing of the avatar and user-info */
+.profile-card {
+  display: flex;
+  margin-bottom: 15px;
+  min-width: 415px;
+}
