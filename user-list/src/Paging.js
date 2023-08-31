@@ -1,9 +1,11 @@
+import "./Paging.css";
+
 // Change the page
 function Paging({ current, total, onPageChange }) {
-  let label = current === total ? "Previous" : "Next";
-
+  // Call the onPageChange function when the button is clicked
   const onclickHandler = () => {
     let newPage;
+
     if (current === total) {
       newPage = current - 1;
     } else {
@@ -13,10 +15,13 @@ function Paging({ current, total, onPageChange }) {
     onPageChange(newPage);
   };
 
+  // Set the label based on the current page number and total number of pages
+  const label = current === total ? "Previous" : "Next";
+
   return (
-    <div>
-      <button onClick={onclickHandler}>{label}</button>
-    </div>
+    <button className="paging-button" onClick={onclickHandler}>
+      {label}
+    </button>
   );
 }
 

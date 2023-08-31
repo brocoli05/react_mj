@@ -1,4 +1,6 @@
+// useEffect, useState: React's built-in Hook functions
 import { useEffect, useState } from "react";
+
 import "./App.css";
 import load from "./Users";
 import Profiles from "./Profiles";
@@ -50,14 +52,15 @@ function App() {
   ];
   */
 
-  const handlePageChange = (newPage) => setCurrentPage(newPage);
+  // update page when we get the new page, copying over the existing values
+  const handlePageChange = (page) => setCurrentPage(page);
 
   // id, email, name, avatarUrl
   return (
     <div className="App">
       <Paging
-        currentPage={currentPage}
-        totalPages={totalPages}
+        current={currentPage}
+        total={totalPages}
         onPageChange={handlePageChange}
       />
       <Profiles users={users} />
