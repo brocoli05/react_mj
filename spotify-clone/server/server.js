@@ -1,15 +1,46 @@
+require("dotenv").config(); // call the spotify info => server 'npm i dotenv'
 const express = require("express");
-const spotifyWebApi = require("spotify-web-api-node");
+const cors = require("cors"); // prevent from being blocked by CORS => server 'npm i cors'
+const bodyParser = require("body-parser"); // prevent 500 server error => server 'npm i body-parser'
+const SpotifyWebApi = require("spotify-web-api-node");
+const lyricsFinder = require("lyrics-finder");
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json()); // call the JSON file
+app.use(bodyParser.urlencoded({ extended: true }));
+
+app.post("/refresh", (req, res) => {
+  const refreshToken = req.body.refreshToken;
+  const spotifyApi = new SpotifyWebApi({
+    redirectUri: process.env.REDIRECT_URI,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    refreshToken,
+  });
+
+  spotifyApi
+    .refreshAccessToken()
+    .then((data) => {
+      // console.log(data.body);
+      res.json({
+        accessToken: data.body.accessToken,
+        expiresIn: data.body.expiresIn,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.sendStatus(400);
+    });
+});
 
 app.post("/login", (req, res) => {
   const code = req.body.code;
 
-  const spotifyApi = new spotifyWebApi({
-    redirectUri: "http://localhost:3000",
-    clientId: "48be1f84e7c8478e872e401fe1324730",
-    clientSecret: "72f119c379134dd78ec9da9e91cfbc88",
+  const spotifyApi = new SpotifyWebApi({
+    redirectUri: process.env.REDIRECT_URI,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
   });
 
   // refresh token
@@ -21,7 +52,17 @@ app.post("/login", (req, res) => {
         expiresIn: data.body.expires_in,
       })
       .catch((err) => {
+        console.log(err);
         res.sendStatus(400);
       });
   });
 });
+
+app.get("/lyrics", async (req, res) => {
+  const lyrics =
+    (await lyricsFinder(req.query.artist, req.query.track)) ||
+    "No Lyrics Found";
+  res.json({ lyrics });
+});
+
+app.listen(3001);
