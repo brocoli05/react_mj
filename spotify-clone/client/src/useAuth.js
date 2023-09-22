@@ -9,7 +9,7 @@ export default function useAuth(code) {
   // refresh token automatically
   useEffect(() => {
     axios
-      .post("https://localhost:3001/login", {
+      .post("http://localhost:3001/login", {
         code,
       })
       .then((res) => {
@@ -18,7 +18,7 @@ export default function useAuth(code) {
         setAccessToken(res.data.accessToken);
         setRefreshToken(res.data.refreshToken);
         setExpiresIn(res.data.expiresIn);
-        window.history.pushState({}, null, "/"); // make url "http://localhost:3000"
+        window.history.pushState({}, null, "/"); // make url "http://localhost:3000/"
       })
       .catch(() => {
         window.location = "/"; // redirect the user back to the login page
@@ -30,7 +30,7 @@ export default function useAuth(code) {
     const interval = setInterval(() => {
       // actually refresh token
       axios
-        .post("https://localhost:3001/refresh", {
+        .post("http://localhost:3001/refresh", {
           refreshToken,
         })
         .then((res) => {
