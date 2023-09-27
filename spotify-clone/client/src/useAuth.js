@@ -38,6 +38,7 @@ export default function useAuth(code) {
           setExpiresIn(res.data.expiresIn);
         })
         .catch((err) => {
+          console.lg(err.message);
           window.location = "/"; // redirect the user back to the login page
         });
       // 1st argument-effect
